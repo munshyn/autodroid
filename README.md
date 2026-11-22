@@ -11,11 +11,11 @@ Hijri date), how long until the next prayer, and the song playing in YT Music wi
 line by line. At prayer time it plays the azan and pauses your music, then picks the music up again
 afterwards. Everything runs on free services; no accounts or paid APIs.
 
-<p align="center"><img src="docs/screens/car-graphite.png" width="720" alt="Car screen, Graphite background"></p>
+<p align="center"><img src="docs/screens/car-black.png" width="720" alt="Car screen, Black background with the Ice accent (the default look)"></p>
 
 <p align="center">
   <img src="docs/screens/car-navy.png" width="350" alt="Car screen, Navy background, Rounded font">
-  <img src="docs/screens/car-black.png" width="350" alt="Car screen, Black background, Classic font">
+  <img src="docs/screens/car-forest.png" width="350" alt="Car screen, Forest background, Classic font">
 </p>
 
 ## What's on the car screen
@@ -47,8 +47,9 @@ Open Autodroid on the phone to change things; the car screen updates straight aw
   azan volume, resume music, test
 - 24-hour clock, Hijri date, greeting, English or Bahasa Melayu
 - Lyrics on / current line only / off, lyrics size, lyrics timing
-- Car screen look: font style (Cluster, Rounded, Classic), text size, background (Graphite, Black, Navy,
-  Forest), six accent colours, clock style, with a live preview of the car screen
+- Car screen look: font style (Cluster, Rounded, Classic), text size, background (Black by default, or
+  Graphite, Navy, Forest), six accent colours (Ice by default), clock style, with a live preview of the car
+  screen
 
 Prayer times and zone names are for Malaysia (JAKIM zones).
 

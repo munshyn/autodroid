@@ -45,8 +45,8 @@ data class Settings(
     // Car screen look
     val fontStyle: FontStyle = FontStyle.CLUSTER,
     val textSize: TextSize = TextSize.STANDARD,
-    val background: Background = Background.GRAPHITE,
-    val accentIndex: Int = 2,
+    val background: Background = Background.BLACK,
+    val accentIndex: Int = 5, // Ice
     val clockStyle: ClockStyle = ClockStyle.LIGHT,
 ) {
     val accent: Long get() = ACCENTS.getOrElse(accentIndex) { ACCENTS[0] }
