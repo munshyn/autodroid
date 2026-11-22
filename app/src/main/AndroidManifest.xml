@@ -11,6 +11,9 @@
     <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
 
+    <!-- Car speed, so YouTube on the car screen only plays while the car is stopped. -->
+    <uses-permission android:name="com.google.android.gms.permission.CAR_SPEED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,6 +38,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- "Share › Autodroid" from YouTube: plays the video on the car screen when parked. -->
+        <activity
+            android:name=".ShareToCarActivity"
+            android:exported="true"
+            android:label="Play on car screen"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
 

@@ -22,6 +22,11 @@ import androidx.car.app.SurfaceCallback
 import androidx.car.app.SurfaceContainer
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
+import android.view.View
+import android.widget.FrameLayout
+import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -54,8 +59,9 @@ data class SurfaceInfo(
  */
 class SurfaceRenderer(
     private val carContext: CarContext,
-    lifecycle: Lifecycle,
+    private val lifecycle: Lifecycle,
     private val model: DashboardModel,
+    private val video: VideoMode,
 ) : DefaultLifecycleObserver {
 
     val info = mutableStateOf(SurfaceInfo())
@@ -64,6 +70,8 @@ class SurfaceRenderer(
     private var virtualDisplay: VirtualDisplay? = null
     private var presentation: Presentation? = null
     private var composeOwner: ComposeHostOwner? = null
+    private var videoLayer: VideoLayer? = null
+    private var videoJob: Job? = null
 
     private val surfaceCallback = object : SurfaceCallback {
         override fun onSurfaceAvailable(surfaceContainer: SurfaceContainer) {
@@ -87,6 +95,15 @@ class SurfaceRenderer(
 
         override fun onClick(x: Float, y: Float) {
             forwardTap(x, y)
+        }
+
+        // Scrolling only matters for the video page (the dashboard doesn't scroll).
+        override fun onScroll(distanceX: Float, distanceY: Float) {
+            videoLayer?.takeIf { it.isShowing }?.scrollBy(distanceX, distanceY)
+        }
+
+        override fun onFling(velocityX: Float, velocityY: Float) {
+            videoLayer?.takeIf { it.isShowing }?.fling(velocityX, velocityY)
         }
     }
 
@@ -142,7 +159,12 @@ class SurfaceRenderer(
                 )
             }
         }
-        window.setContentView(view)
+        val layer = VideoLayer(window.context).also { videoLayer = it }
+        val root = FrameLayout(window.context).apply {
+            addView(view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+            addView(layer.view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        }
+        window.setContentView(root)
         window.window?.decorView?.let {
             it.setViewTreeLifecycleOwner(owner)
             it.setViewTreeSavedStateRegistryOwner(owner)
@@ -151,6 +173,30 @@ class SurfaceRenderer(
         window.show()
         presentation = window
         registerDebugCapture()
+
+        // Video mode: show or hide the YouTube page over the dashboard.
+        videoJob = lifecycle.coroutineScope.launch {
+            launch {
+                video.open.collect { open ->
+                    if (open) {
+                        layer.show(video.load.value)
+                        video.loaded()
+                        view.visibility = View.INVISIBLE
+                    } else {
+                        layer.hide()
+                        view.visibility = View.VISIBLE
+                    }
+                }
+            }
+            launch {
+                video.load.collect { url ->
+                    if (url != null && video.open.value) {
+                        layer.show(url)
+                        video.loaded()
+                    }
+                }
+            }
+        }
     }
 
     private var captureReceiver: BroadcastReceiver? = null
@@ -194,6 +240,10 @@ class SurfaceRenderer(
     private fun release() {
         captureReceiver?.let { runCatching { carContext.unregisterReceiver(it) } }
         captureReceiver = null
+        videoJob?.cancel()
+        videoJob = null
+        videoLayer?.release()
+        videoLayer = null
         composeOwner?.stop()
         composeOwner = null
         presentation?.dismiss()

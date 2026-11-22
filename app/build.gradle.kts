@@ -14,8 +14,8 @@ android {
         applicationId = "com.husny.autodroid"
         minSdk = 26
         targetSdk = 35
-        versionCode = 12
-        versionName = "1.1.0"
+        versionCode = 13
+        versionName = "1.2.0"
     }
 
     // Release key (kept out of git). Same key every time, so updates install over the old version.
@@ -60,6 +60,8 @@ android {
 dependencies {
     // Android Auto (Car App Library) - free, open source
     implementation("androidx.car.app:app:1.7.0")
+    // Car speed on Android Auto (for parked-only video)
+    implementation("androidx.car.app:app-projected:1.7.0")
 
     // Core + lifecycle
     implementation("androidx.core:core-ktx:1.15.0")

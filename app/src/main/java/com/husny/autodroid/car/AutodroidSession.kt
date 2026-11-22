@@ -13,7 +13,9 @@ class AutodroidSession : Session() {
     override fun onCreateScreen(intent: Intent): Screen {
         android.util.Log.i("Autodroid", "Car session started")
         val model = DashboardModel(carContext, lifecycle)
-        val renderer = SurfaceRenderer(carContext, lifecycle, model)
-        return HomeScreen(carContext, renderer)
+        val motion = MotionWatcher(carContext, lifecycle)
+        val video = VideoMode(carContext, lifecycle, motion)
+        val renderer = SurfaceRenderer(carContext, lifecycle, model, video)
+        return HomeScreen(carContext, renderer, video)
     }
 }

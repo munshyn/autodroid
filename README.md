@@ -4,7 +4,7 @@
 
 <p align="center">A minimal home screen for your Android Auto, with prayer times and synced lyrics.</p>
 
-<p align="center"><a href="https://github.com/munshyn/autodroid/raw/main/releases/Autodroid-1.1.0.apk"><b>⬇ Download Autodroid 1.1.0 (APK, 3.3 MB)</b></a></p>
+<p align="center"><a href="https://github.com/munshyn/autodroid/raw/main/releases/Autodroid-1.2.0.apk"><b>⬇ Download Autodroid 1.2.0 (APK, 3.3 MB)</b></a></p>
 
 Autodroid fills the car screen with the things you glance at while driving: the time and date (with the
 Hijri date), how long until the next prayer, and the song playing in YT Music with its lyrics moving along
@@ -28,6 +28,9 @@ afterwards. Everything runs on free services; no accounts or paid APIs.
 - **Music** from YT Music: album art, title, progress, previous / play-pause / next.
 - **Synced lyrics** from [Lyrica](https://github.com/Wilooper/Lyrica): the previous line, the current line
   large, and the next lines coming up.
+- **YouTube when parked:** tap **Video** on the car screen, or in the YouTube app on the phone choose
+  **Share › Play on car screen**. Video only opens while the car is stopped and closes as soon as it moves
+  (speed from the car, or the phone's GPS if the car doesn't share it).
 
 Autodroid registers as a navigation app, which gives it the whole car screen. It has no map: switch to
 Google Maps or Waze from the Android Auto taskbar for directions, and Autodroid keeps running (the azan still
@@ -42,7 +45,7 @@ plays).
 
 Open Autodroid on the phone to change things; the car screen updates straight away.
 
-- Music access and location permissions
+- Music access, location and car speed permissions
 - Prayer zone (GPS or chosen), "azan soon" warning, what happens at prayer time, azan and Subuh audio,
   azan volume, resume music, test
 - 24-hour clock, Hijri date, greeting, English or Bahasa Melayu
@@ -64,7 +67,7 @@ the phone's own installer with the Play Store recorded as the source, which need
    on the same Wi-Fi, download the APK and [install-to-phone.ps1](install-to-phone.ps1), then run:
 
    ```powershell
-   .\install-to-phone.ps1 -Phone <ip>:<port> -Apk .\Autodroid-1.1.0.apk
+   .\install-to-phone.ps1 -Phone <ip>:<port> -Apk .\Autodroid-1.2.0.apk
    ```
 
 3. Unlock the phone and tap **Install** (or **Update**).

@@ -43,6 +43,8 @@ class MainActivity : ComponentActivity() {
         refresh()
     }
 
+    private val askCarSpeed = registerForActivityResult(ActivityResultContracts.RequestPermission()) { refresh() }
+
     private val askLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         refresh()
         if (ZoneTracker.hasPermission(this) && !ZoneTracker.isManual(this)) detectZone()
@@ -60,6 +62,7 @@ class MainActivity : ComponentActivity() {
             allowLocation = {
                 askLocation.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
             },
+            allowCarSpeed = { askCarSpeed.launch(CAR_SPEED_PERMISSION) },
             detectZone = ::detectZone,
             useGps = {
                 ZoneTracker.setAuto(this)
@@ -136,6 +139,7 @@ class MainActivity : ComponentActivity() {
         phoneState.value = phoneState.value.copy(
             musicAccess = hasMusicAccess(this),
             locationAllowed = ZoneTracker.hasPermission(this),
+            carSpeedAllowed = checkSelfPermission(CAR_SPEED_PERMISSION) == android.content.pm.PackageManager.PERMISSION_GRANTED,
             zoneManual = ZoneTracker.isManual(this),
             zoneFromGps = ZoneTracker.detected(this),
             detecting = false,
@@ -147,3 +151,5 @@ class MainActivity : ComponentActivity() {
         )
     }
 }
+
+private const val CAR_SPEED_PERMISSION = "com.google.android.gms.permission.CAR_SPEED"

@@ -86,6 +86,7 @@ import java.time.LocalTime
 data class PhoneState(
     val musicAccess: Boolean = false,
     val locationAllowed: Boolean = false,
+    val carSpeedAllowed: Boolean = false,
     val zone: Zone = Zone("", ""),
     val zoneManual: Boolean = false,
     val zoneFromGps: Boolean = false,
@@ -103,6 +104,7 @@ class PhoneActions(
     val update: ((Settings) -> Settings) -> Unit,
     val allowMusic: () -> Unit,
     val allowLocation: () -> Unit,
+    val allowCarSpeed: () -> Unit,
     val detectZone: () -> Unit,
     val useGps: () -> Unit,
     val loadZones: (onLoaded: (List<ZoneOption>?) -> Unit) -> Unit,
@@ -143,8 +145,12 @@ fun PhoneSettings(settings: Settings, state: PhoneState, actions: PhoneActions) 
                     if (!state.musicAccess) AccentButton("Allow", accent, actions.allowMusic)
                     else StatusText("OK", accent)
                 }
-                Item("Location", if (state.locationAllowed) "Allowed" else "Needed to pick the prayer zone from GPS", last = true) {
+                Item("Location", if (state.locationAllowed) "Allowed" else "Needed to pick the prayer zone from GPS") {
                     if (!state.locationAllowed) AccentButton("Allow", accent, actions.allowLocation)
+                    else StatusText("OK", accent)
+                }
+                Item("Car speed", if (state.carSpeedAllowed) "Allowed" else "Lets video play only when the car is stopped", last = true) {
+                    if (!state.carSpeedAllowed) AccentButton("Allow", accent, actions.allowCarSpeed)
                     else StatusText("OK", accent)
                 }
             }
@@ -351,6 +357,19 @@ fun PhoneSettings(settings: Settings, state: PhoneState, actions: PhoneActions) 
                     Choices(listOf("Light", "Bold", "Monospace"), styles.indexOf(settings.clockStyle), accent) { i ->
                         set { it.copy(clockStyle = styles[i]) }
                     }
+                }
+            }
+
+            // ------------------------------------------------------------ video
+            Section("VIDEO · PARKED ONLY", accent) {
+                Stacked("YouTube on the car screen", last = true) {
+                    Text(
+                        "Tap Video on the car screen, or open a video in the YouTube app here and choose " +
+                            "Share › Play on car screen. Video only opens while the car is stopped and closes " +
+                            "as soon as it moves. Speed comes from the car, or from this phone's GPS if the car " +
+                            "doesn't share it.",
+                        color = PhoneColors.TextSoft, fontSize = 14.sp, lineHeight = 19.sp,
+                    )
                 }
             }
 
