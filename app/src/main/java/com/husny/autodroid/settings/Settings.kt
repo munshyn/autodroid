@@ -10,16 +10,23 @@ enum class AzanMode { FULL, PAUSE_ONLY, OFF }
 enum class Language { ENGLISH, MALAY }
 enum class LyricsMode { SYNCED, CURRENT_ONLY, OFF }
 enum class ClockStyle { LIGHT, BOLD, MONO }
+enum class FontStyle { CLUSTER, ROUNDED, CLASSIC }
+enum class TextSize(val scale: Float) { COMPACT(0.9f), STANDARD(1f), LARGE(1.1f) }
+enum class Background { GRAPHITE, BLACK, NAVY, FOREST }
 
-/** Accent colours offered in Appearance (ARGB). */
-val ACCENTS: List<Long> = listOf(0xFF3DD68C, 0xFF5B8CFF, 0xFFF5B544, 0xFFF27FB2)
-val ACCENT_NAMES: List<String> = listOf("Green", "Blue", "Amber", "Pink")
+/**
+ * Accent colours offered in "Car screen look" (ARGB). Saved by position, so new colours go on
+ * the end; [ACCENT_ORDER] is the order they're shown in.
+ */
+val ACCENTS: List<Long> = listOf(0xFF3DD68C, 0xFF5B8CFF, 0xFFF5B544, 0xFFF27FB2, 0xFFFF7A5C, 0xFFCFE3EA)
+val ACCENT_NAMES: List<String> = listOf("Green", "Blue", "Amber", "Pink", "Coral", "Ice")
+val ACCENT_ORDER: List<Int> = listOf(2, 0, 1, 3, 4, 5)
 
 /** Everything the user can change on the phone's settings screen. */
 data class Settings(
     // Prayer & azan
     val azanMode: AzanMode = AzanMode.FULL,
-    /** Minutes before a prayer that the card turns amber; 0 = off. */
+    /** Minutes before a prayer that the countdown is highlighted; 0 = off. */
     val azanSoonMinutes: Int = 10,
     val azanVolumePercent: Int = 70,
     val resumeMusic: Boolean = true,
@@ -35,12 +42,12 @@ data class Settings(
     val lyricsSize: Int = 1,
     /** Shifts lyrics earlier (negative) or later (positive), in milliseconds. */
     val lyricsOffsetMs: Int = 0,
-    // Appearance
-    val accentIndex: Int = 0,
-    /** How much the album art is darkened behind the song title and buttons, 0–100. */
-    val artShadePercent: Int = 60,
+    // Car screen look
+    val fontStyle: FontStyle = FontStyle.CLUSTER,
+    val textSize: TextSize = TextSize.STANDARD,
+    val background: Background = Background.GRAPHITE,
+    val accentIndex: Int = 2,
     val clockStyle: ClockStyle = ClockStyle.LIGHT,
-    val amoledBlack: Boolean = false,
 ) {
     val accent: Long get() = ACCENTS.getOrElse(accentIndex) { ACCENTS[0] }
 }
@@ -89,10 +96,15 @@ object SettingsStore {
             lyricsMode = enumOr(p.getString("lyrics_mode", null), d.lyricsMode),
             lyricsSize = p.getInt("lyrics_size", d.lyricsSize),
             lyricsOffsetMs = p.getInt("lyrics_offset", d.lyricsOffsetMs),
-            accentIndex = p.getInt("accent", d.accentIndex),
-            artShadePercent = p.getInt("art_shade", d.artShadePercent),
+            fontStyle = enumOr(p.getString("font_style", null), d.fontStyle),
+            textSize = enumOr(p.getString("text_size", null), d.textSize),
+            // Up to 1.0.0 there was a "Pure black background" switch instead.
+            background = enumOr(
+                p.getString("background", null),
+                if (p.getBoolean("amoled", false)) Background.BLACK else d.background,
+            ),
+            accentIndex = p.getInt("accent", d.accentIndex).takeIf { it in ACCENTS.indices } ?: d.accentIndex,
             clockStyle = enumOr(p.getString("clock_style", null), d.clockStyle),
-            amoledBlack = p.getBoolean("amoled", d.amoledBlack),
         )
     }
 
@@ -110,10 +122,13 @@ object SettingsStore {
             .putString("lyrics_mode", s.lyricsMode.name)
             .putInt("lyrics_size", s.lyricsSize)
             .putInt("lyrics_offset", s.lyricsOffsetMs)
+            .putString("font_style", s.fontStyle.name)
+            .putString("text_size", s.textSize.name)
+            .putString("background", s.background.name)
             .putInt("accent", s.accentIndex)
-            .putInt("art_shade", s.artShadePercent)
             .putString("clock_style", s.clockStyle.name)
-            .putBoolean("amoled", s.amoledBlack)
+            .remove("art_shade")
+            .remove("amoled")
             .apply()
     }
 

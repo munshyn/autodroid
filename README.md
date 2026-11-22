@@ -7,7 +7,7 @@ Hijri date), how long until the next prayer, and the song playing in YT Music wi
 line by line. At prayer time it plays the azan and pauses your music, then picks the music up again
 afterwards. Everything runs on free services; no accounts or paid APIs.
 
-**Download:** [Autodroid 1.0.0 APK](releases/Autodroid-1.0.0.apk) (see [Installing](#installing), a plain
+**Download:** [Autodroid 1.1.0 APK](releases/Autodroid-1.1.0.apk) (see [Installing](#installing), a plain
 install won't show up in Android Auto).
 
 ## What's on the car screen
@@ -34,7 +34,8 @@ Open Autodroid on the phone to change things; the car screen updates straight aw
   azan volume, resume music, test
 - 24-hour clock, Hijri date, greeting, English or Bahasa Melayu
 - Lyrics on / current line only / off, lyrics size, lyrics timing
-- Accent colour, clock style, pure black background
+- Car screen look: font style (Cluster, Rounded, Classic), text size, background (Graphite, Black, Navy,
+  Forest), six accent colours, clock style, with a live preview of the car screen
 
 Prayer times and zone names are for Malaysia (JAKIM zones).
 
@@ -75,6 +76,7 @@ mode and "Start head unit server".
 - Prayer times: [JAKIM e-solat](https://www.e-solat.gov.my), backup [waktusolat.app](https://waktusolat.app)
 - Zones from GPS: waktusolat.app
 - Lyrics: [Lyrica](https://github.com/Wilooper/Lyrica) (open source; searches LRCLIB, NetEase and others)
+- Fonts: [Barlow](https://github.com/jpt/barlow) and [Outfit](https://github.com/Outfitio/Outfit-Fonts), SIL Open Font License
 
 ## Project layout
 
@@ -90,7 +92,8 @@ app/src/main/java/com/husny/autodroid/
   data/Zone                  prayer zone from GPS
   data/NowPlaying            YT Music now-playing and controls (media sessions)
   data/Lyrics                Lyrica synced lyrics
-  ui/CarDashboard            the car screen
+  ui/CarDashboard            the car screen (Cluster layout)
+  ui/CarLook                 fonts, backgrounds and sizes for the car screen
   ui/PhoneSettings           the phone settings screen
   settings/Settings          settings shared live between phone and car
   azan/Azan                  chimes, pause, azan, resume
