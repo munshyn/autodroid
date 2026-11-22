@@ -232,7 +232,7 @@ fun PhoneSettings(settings: Settings, state: PhoneState, actions: PhoneActions) 
 
             // ------------------------------------------------------------ clock & date
             Section("CLOCK & DATE", accent) {
-                Item("24-hour clock", "Also switches with the 12h / 24h button in the car") {
+                Item("24-hour clock", "Also switches when you tap the clock in the car") {
                     Toggle(settings.use24h, accent) { v -> set { it.copy(use24h = v) } }
                 }
                 Item("Show Hijri date") {
@@ -364,7 +364,7 @@ fun PhoneSettings(settings: Settings, state: PhoneState, actions: PhoneActions) 
             Section("VIDEO · PARKED ONLY", accent) {
                 Stacked("YouTube on the car screen", last = true) {
                     Text(
-                        "Tap Video on the car screen, or open a video in the YouTube app here and choose " +
+                        "Tap the video button on the car screen, or open a video in the YouTube app here and choose " +
                             "Share › Play on car screen. Video only opens while the car is stopped and closes " +
                             "as soon as it moves. Speed comes from the car, or from this phone's GPS if the car " +
                             "doesn't share it.",

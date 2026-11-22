@@ -30,7 +30,7 @@ an app (a plain `adb install` is rejected). No Shizuku or UnknownAuto needed.
 | What you see | What to do |
 |---|---|
 | Autodroid missing from the car's app list | Customise launcher (above). Still missing: run the update script below and tap Update on the phone; that restores the install record Android Auto needs. |
-| Black screen with only the "12h / 24h" button | Android Auto lost track of Autodroid. Disconnect the phone, force-stop Android Auto (phone Settings › Apps › Android Auto › Force stop), reconnect. |
+| Black screen with only the round video button | Android Auto lost track of Autodroid. Disconnect the phone, force-stop Android Auto (phone Settings › Apps › Android Auto › Force stop), reconnect. |
 | Music card says "Allow music access" | Phone: Autodroid › Setup › Music access › Allow. |
 | Prayer zone wrong | Phone: Autodroid › Prayer zone › Detect zone now, or Choose zone. |
 | No lyrics | The free Lyrica server may be asleep or down; it usually recovers. "No lyrics found" can also just mean no source has that song. |

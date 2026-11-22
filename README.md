@@ -28,7 +28,7 @@ afterwards. Everything runs on free services; no accounts or paid APIs.
 - **Music** from YT Music: album art, title, progress, previous / play-pause / next.
 - **Synced lyrics** from [Lyrica](https://github.com/Wilooper/Lyrica): the previous line, the current line
   large, and the next lines coming up.
-- **YouTube when parked:** tap **Video** on the car screen, or in the YouTube app on the phone choose
+- **YouTube when parked:** tap the video button on the car screen, or in the YouTube app on the phone choose
   **Share › Play on car screen**. Video only opens while the car is stopped and closes as soon as it moves
   (speed from the car, or the phone's GPS if the car doesn't share it).
 
