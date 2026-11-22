@@ -3,24 +3,35 @@
 # `adb install` is rejected), so you tap Update on the phone to finish.
 #
 # Usage (phone on the same Wi-Fi, Wireless debugging on):
-#   .\install-to-phone.ps1 -Phone 192.168.1.20:41234
+#   .\install-to-phone.ps1 -Phone 192.168.1.20:41234                  builds, then installs
+#   .\install-to-phone.ps1 -Phone 192.168.1.20:41234 -Apk .\app.apk   installs a downloaded APK
 param(
-    [Parameter(Mandatory = $true)][string]$Phone
+    [Parameter(Mandatory = $true)][string]$Phone,
+    [string]$Apk
 )
-$ErrorActionPreference = "Stop"
+# "Continue": adb prints progress on stderr, which "Stop" would treat as a failure.
+$ErrorActionPreference = "Continue"
+# adb from the Android SDK, or from platform-tools on the PATH.
 $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
-Set-Location $PSScriptRoot
+if (-not (Test-Path $adb)) { $adb = (Get-Command adb -ErrorAction SilentlyContinue).Source }
+if (-not $adb) { throw "adb not found: install Android platform-tools and add it to PATH" }
 
-Write-Host "Building release..."
-& .\gradlew.bat assembleRelease --no-daemon -q
-if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+if ($Apk) {
+    $Apk = (Resolve-Path $Apk).Path
+} else {
+    $env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+    Set-Location $PSScriptRoot
+    Write-Host "Building release..."
+    & .\gradlew.bat assembleRelease --no-daemon -q
+    if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+    $Apk = "$PSScriptRoot\app\build\outputs\apk\release\app-release.apk"
+}
 
 Write-Host "Connecting to $Phone..."
 & $adb connect $Phone | Out-Host
 
 Write-Host "Copying to the phone..."
-& $adb -s $Phone push "app\build\outputs\apk\release\app-release.apk" /sdcard/Download/Autodroid.apk | Out-Host
+& $adb -s $Phone push "$Apk" /sdcard/Download/Autodroid.apk | Out-Host
 & $adb -s $Phone shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Download/Autodroid.apk | Out-Null
 Start-Sleep -Seconds 2
 $row = & $adb -s $Phone shell "content query --uri content://media/external/file --projection _id --where `"_data LIKE '%/Download/Autodroid.apk'`""

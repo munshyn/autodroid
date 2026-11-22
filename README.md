@@ -1,14 +1,22 @@
-# Autodroid
+<p align="center"><img src="docs/icon.svg" width="120" alt="Autodroid icon"></p>
 
-A minimal home screen for your Android Auto, with prayer times and synced lyrics.
+<h1 align="center">Autodroid</h1>
+
+<p align="center">A minimal home screen for your Android Auto, with prayer times and synced lyrics.</p>
+
+<p align="center"><a href="https://github.com/munshyn/autodroid/raw/main/releases/Autodroid-1.1.0.apk"><b>⬇ Download Autodroid 1.1.0 (APK, 3.3 MB)</b></a></p>
 
 Autodroid fills the car screen with the things you glance at while driving: the time and date (with the
 Hijri date), how long until the next prayer, and the song playing in YT Music with its lyrics moving along
 line by line. At prayer time it plays the azan and pauses your music, then picks the music up again
 afterwards. Everything runs on free services; no accounts or paid APIs.
 
-**Download:** [Autodroid 1.1.0 APK](releases/Autodroid-1.1.0.apk) (see [Installing](#installing), a plain
-install won't show up in Android Auto).
+<p align="center"><img src="docs/screens/car-graphite.png" width="720" alt="Car screen, Graphite background"></p>
+
+<p align="center">
+  <img src="docs/screens/car-navy.png" width="350" alt="Car screen, Navy background, Rounded font">
+  <img src="docs/screens/car-black.png" width="350" alt="Car screen, Black background, Classic font">
+</p>
 
 ## What's on the car screen
 
@@ -16,7 +24,7 @@ install won't show up in Android Auto).
 - **Next prayer** with a countdown and all five times for the day, from JAKIM e-solat for your zone. The
   zone is found from GPS (or picked by hand), and times are saved on the phone so they work with no signal.
 - **Azan:** three chimes, the music pauses, the azan plays, and the music resumes a second after it ends.
-  Tap the prayer card to stop early. "Chimes and pause only" or "do nothing" are also available.
+  Tap the prayer box to stop early. "Chimes and pause only" or "do nothing" are also available.
 - **Music** from YT Music: album art, title, progress, previous / play-pause / next.
 - **Synced lyrics** from [Lyrica](https://github.com/Wilooper/Lyrica): the previous line, the current line
   large, and the next lines coming up.
@@ -26,6 +34,11 @@ Google Maps or Waze from the Android Auto taskbar for directions, and Autodroid 
 plays).
 
 ## Settings on the phone
+
+<p align="center">
+  <img src="docs/screens/phone-settings.png" width="260" alt="Phone settings">
+  <img src="docs/screens/phone-look.png" width="260" alt="Car screen look settings with live preview">
+</p>
 
 Open Autodroid on the phone to change things; the car screen updates straight away.
 
@@ -41,35 +54,23 @@ Prayer times and zone names are for Malaysia (JAKIM zones).
 
 ## Installing
 
-Android Auto only lists Car App Library apps that it believes came from the Play Store. Install the APK
-through the phone's own installer with the Play Store recorded as installer:
+Android Auto only lists apps like Autodroid when it believes they came from the Play Store, so tapping the
+APK to install it isn't enough: the app installs, but Android Auto hides it. It has to be installed through
+the phone's own installer with the Play Store recorded as the source, which needs a PC once:
 
-1. Turn on **Wireless debugging** on the phone and connect with `adb connect <ip>:<port>`.
-2. Copy the APK to the phone and open it with the installer, marked as from the Play Store. The script
-   [install-to-phone.ps1](install-to-phone.ps1) does this (it builds first, so it needs the signing setup
-   below):
+1. On the phone, turn on **Developer options › Wireless debugging** and note the IP address and port.
+2. On a Windows PC with [Android platform-tools](https://developer.android.com/tools/releases/platform-tools)
+   on the same Wi-Fi, download the APK and [install-to-phone.ps1](install-to-phone.ps1), then run:
 
    ```powershell
-   .\install-to-phone.ps1 -Phone <ip>:<port>
+   .\install-to-phone.ps1 -Phone <ip>:<port> -Apk .\Autodroid-1.1.0.apk
    ```
 
-3. Tap **Update** / **Install** on the phone.
+3. Unlock the phone and tap **Install** (or **Update**).
 4. In Android Auto settings › **Customise launcher**, tick Autodroid.
 
 Allow **Music access** and **Location** in Autodroid on the phone. More detail and troubleshooting:
 [CAR_SETUP.md](CAR_SETUP.md).
-
-## Building
-
-- JDK 17 (path set in `gradle.properties`), Android SDK 35.
-- **Azan audio is not in this repo.** Put an MP3 of your choice at
-  `app/src/main/res/raw/azan_default.mp3` before building; it's the built-in azan.
-- Debug build: `gradlew.bat assembleDebug`
-- Release build: create your own `autodroid-release.jks` and a `keystore.properties` next to it with
-  `storeFile`, `storePassword`, `keyAlias`, `keyPassword`, then `gradlew.bat assembleRelease`.
-
-To try the car screen on a PC, use Android Studio's **Desktop Head Unit** with Android Auto's developer
-mode and "Start head unit server".
 
 ## Sources
 
@@ -77,24 +78,3 @@ mode and "Start head unit server".
 - Zones from GPS: waktusolat.app
 - Lyrics: [Lyrica](https://github.com/Wilooper/Lyrica) (open source; searches LRCLIB, NetEase and others)
 - Fonts: [Barlow](https://github.com/jpt/barlow) and [Outfit](https://github.com/Outfitio/Outfit-Fonts), SIL Open Font License
-
-## Project layout
-
-```
-app/src/main/java/com/husny/autodroid/
-  MainActivity.kt            phone settings screen
-  car/AutodroidCarAppService entry point for Android Auto
-  car/AutodroidSession       one car-screen session
-  car/HomeScreen             NavigationTemplate (full-screen drawing surface + 12h/24h button)
-  car/DashboardModel         prayer times, music and lyrics for one car session
-  car/SurfaceRenderer        draws the Compose UI onto the car display
-  data/PrayerTimes           JAKIM prayer times + offline cache
-  data/Zone                  prayer zone from GPS
-  data/NowPlaying            YT Music now-playing and controls (media sessions)
-  data/Lyrics                Lyrica synced lyrics
-  ui/CarDashboard            the car screen (Cluster layout)
-  ui/CarLook                 fonts, backgrounds and sizes for the car screen
-  ui/PhoneSettings           the phone settings screen
-  settings/Settings          settings shared live between phone and car
-  azan/Azan                  chimes, pause, azan, resume
-```
